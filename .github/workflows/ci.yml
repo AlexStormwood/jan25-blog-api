@@ -17,6 +17,12 @@ on:
   pull_request:
     types: [opened, edited]
 
+permissions:
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
+
 jobs:
   ci:
     name: CI Testing
@@ -39,5 +45,16 @@ jobs:
 
       # Run the test command that we have in the package.json file!
       - run: npm test
+        # env:
+        #   DATABASE_URI: bananas
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: (!cancelled())
+        with:
+          files: |
+            test-results/**/*.xml
+            test-results/**/*.trx
+            test-results/**/*.json
 
   
