@@ -144,4 +144,4 @@ vite.config.ts.timestamp-*
 # Ignore this file to prevent OS-specific versions of dependencies being used 
 # on the wrong OS, AND
 # keep the chunky file out of the repo to keep the repo slim!
-package-lock.json 
+# package-lock.json 
