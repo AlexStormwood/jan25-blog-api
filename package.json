@@ -4,13 +4,13 @@
   "description": "Blog API for the \"ExpressJS Build an API\" Ed content.",
   "main": "index.js",
   "scripts": {
-    "start":"node ./src/index.js",
-    "dev:watch":"node --watch ./src/index.js",
-    "dev:db:seed":"node ./src/utils/_dev/dbSeed.js",
-    "dev:db:wipe":"node ./src/utils/_dev/dbWipe.js",
-    "dev:db:wipe-and-seed":"npm run dev:db:wipe && npm run dev:db:seed",
-    "dev:env":"node ./src/utils/_dev/envSetup.js",
-    "test":"echo 'No tests configured yet!'"
+    "start": "node ./src/index.js",
+    "dev:watch": "node --watch ./src/index.js",
+    "dev:db:seed": "node ./src/utils/_dev/dbSeed.js",
+    "dev:db:wipe": "node ./src/utils/_dev/dbWipe.js",
+    "dev:db:wipe-and-seed": "npm run dev:db:wipe && npm run dev:db:seed",
+    "dev:env": "node ./src/utils/_dev/envSetup.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -30,5 +30,9 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.4"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   }
 }
