@@ -10,7 +10,7 @@
     "dev:db:wipe": "node ./src/utils/_dev/dbWipe.js",
     "dev:db:wipe-and-seed": "npm run dev:db:wipe && npm run dev:db:seed",
     "dev:env": "node ./src/utils/_dev/envSetup.js",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "repository": {
     "type": "git",
