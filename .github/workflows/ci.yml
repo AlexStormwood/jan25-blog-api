@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_env:
+        description: "The NODE_ENV of the test - or at least pretend it's that!"
+        required: true
+        type: choice
+        options:
+          - test
+          - dev
+          - staging
+          - prod
+        default: test
+  push:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  ci:
+    name: CI Testing
+    runs-on: ubuntu-latest
+    steps:
+      # Remember! If we are expecting to use anything from the repo,
+      # we must checkout the repo before we do any repo-specific things!
+      - uses: actions/checkout@v7.0.1
+
+      # Once the repo is here, package.json & package-lock.json both exist
+      # so now we can install dependencies!
+      - run: npm ci
+
+      # Run the test command that we have in the package.json file!
+      - run: npm test
+
+  
