@@ -21,6 +21,13 @@ jobs:
   ci:
     name: CI Testing
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:8.3.8
+        ports:
+          # host:internal
+          - 27017:27017
+        
     steps:
       # Remember! If we are expecting to use anything from the repo,
       # we must checkout the repo before we do any repo-specific things!
