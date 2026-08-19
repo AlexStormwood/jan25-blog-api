@@ -44,7 +44,7 @@ jobs:
       - run: npm ci
 
       # Run the test command that we have in the package.json file!
-      - run: npm test
+      - run: npm run test:ci
         # env:
         #   DATABASE_URI: bananas
 
