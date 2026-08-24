@@ -1,0 +1,24 @@
+name: JAN25 Blog API
+services:
+  
+  backend:
+    container_name: jan25blogtesto
+    build:
+      context: .
+      args:
+        - PORT=${PORT:-3000}
+    ports:
+    #   host:container
+    #  Can't customise container port if we are NOT building the image here in this compose file!!
+      - ${PORT:-3000}:${PORT:-3000}
+
+    env_file:
+      - ./docker.env
+
+
+
+  database:
+    image: mongo
+    container_name: "mongodb_container"
+    volumes:
+      - ./mongo-data:/data/db

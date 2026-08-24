@@ -147,3 +147,5 @@ vite.config.ts.timestamp-*
 # package-lock.json 
 
 **/junit.xml
+./mongo-data/*
+/mongo-data

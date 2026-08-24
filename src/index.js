@@ -12,6 +12,7 @@ try {
 	}
 }
 
+console.log(process.env);
 
 // Connect to the database 
 const { dbConnect } = require("./utils/databaseConnectionManager");
