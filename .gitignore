@@ -145,3 +145,5 @@ vite.config.ts.timestamp-*
 # on the wrong OS, AND
 # keep the chunky file out of the repo to keep the repo slim!
 # package-lock.json 
+
+**/junit.xml
