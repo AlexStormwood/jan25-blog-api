@@ -55,4 +55,9 @@ jobs:
           # tags: ${{ github.repository }}:latest
           tags: |
             ${{ env.REPO_LC }}:latest
-            
+
+      - name: Notify Discord
+        uses: MineBartekSA/discord-webhook@v2
+        with:
+          webhook: ${{ secrets.WEBHOOK_URL }}
+          content: Hello Discord! New Docker image available at '${{ env.REPO_LC }}:latest'
