@@ -5,7 +5,13 @@ on:
     branches: 
       - main
 
+# Environment variables available to every job in the workflow file
+env:
+  OWNER_LC: ""
+  REPO_LC: ""
+
 jobs:
+
   build_container:
     name: Build Container
     runs-on: ubuntu-latest
@@ -30,6 +36,15 @@ jobs:
       - name: Set up Docker Buildx 
         uses: docker/setup-buildx-action@v4
 
+      - name: Sanitise user and repo name to be lowercase
+        run: | 
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+          echo "REPO_LC=${REPO,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+          REPO: '${{ github.repository }}'
+          
+
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -37,4 +52,7 @@ jobs:
           #     alexstormwood/somecustomnameotherthanthereponame
           # tags: ${{ github.repository_owner }}/somecustomnameotherthanthereponame:latest          
           #     alexstormwood/jan25-blog-api
-          tags: ${{ github.repository }}:latest
+          # tags: ${{ github.repository }}:latest
+          tags: |
+            ${{ env.REPO_LC }}:latest
+            
