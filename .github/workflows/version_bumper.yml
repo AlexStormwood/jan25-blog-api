@@ -1,0 +1,88 @@
+name: Bump version
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths-ignore:
+#       - 'package.json'
+#       - 'CHANGELOG.md'
+# on: 
+#   pull_request:
+#     types: 
+#       - closed
+#     branches:
+#       - 'main'
+on:
+  workflow_dispatch:
+    inputs:
+      bumpType:
+        description: SemVer incremenet type to use!
+        required: true
+        default: patch # vX.X.99999
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  
+  conventional-commits-processor:
+    # if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    outputs:
+      new-tag: ${{ steps.bumper-step.outputs.newTag }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name:  'Automated Version Bump'
+      id: bumper-step
+      uses:  'phips28/gh-action-bump-version@master'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        version-type:  ${{ inputs.bumpType }}
+
+        # v1.1.9
+        # UPDATE AS MAJOR 
+        # v2.0.0
+      
+    # - name: Bump version and push tag
+    #   id: bumper-step
+    #   uses: TriPSs/conventional-changelog-action@v6.0.0
+    #   with:
+    #     git-message: 'chore(release): {version}'
+    #     preset: 'angular'
+    #     tag-prefix: ''
+    #     output-file: 'CHANGELOG.md'
+    #     git-user-email: "contact@bigfootds.com"
+    #     git-user-name: "BigfootDS"
+
+    # - name: Get TriPSs step outputs
+    #   run: |
+    #     echo ${{ steps.bumper-step.outputs }}
+
+    # - name: Create repo release
+    #   if: ${{ steps.bumper-step.outputs.skipped == 'false' }}
+    #   uses: softprops/action-gh-release@v2.2.2
+    #   with: 
+    #     body: ${{ steps.bumper-step.outputs.clean_changelog }}
+    #     tag_name: ${{ steps.bumper-step.outputs.tag }}
+    #     draft: false
+    #     prerelease: false
+
+  docker-cd-call:
+    needs: [conventional-commits-processor]
+    permissions: 
+      packages: write
+      contents: read
+    uses: ./.github/workflows/docker-cd.yml
+    with:
+        new-version-tag: ${{ needs.conventional-commits-processor.outputs.new-tag }}

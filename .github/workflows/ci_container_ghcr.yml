@@ -57,6 +57,7 @@ jobs:
           # tags: ${{ github.repository }}:latest
           tags: |
             ghcr.io/${{ env.REPO_LC }}:latest
+            # ghcr.io/${{ env.REPO_LC }}:${{  }}
 
       # - name: Notify Discord
       #   uses: MineBartekSA/discord-webhook@v2
