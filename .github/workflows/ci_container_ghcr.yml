@@ -56,7 +56,7 @@ jobs:
           #     alexstormwood/jan25-blog-api
           # tags: ${{ github.repository }}:latest
           tags: |
-            ${{ env.REPO_LC }}:latest
+            ghcr.io/${{ env.REPO_LC }}:latest
 
       # - name: Notify Discord
       #   uses: MineBartekSA/discord-webhook@v2
