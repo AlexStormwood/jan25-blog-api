@@ -57,4 +57,22 @@ jobs:
             test-results/**/*.trx
             test-results/**/*.json
 
-  
+  terraform:
+    needs: [ci]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Terraform CLI in the runner 
+        uses: hashicorp/setup-terraform@v4.0.1
+        with:
+          terraform_version: 1.16.4
+
+      - name: Terraform check
+        run: terraform init
+
+      - name: Terraform plan
+        run: terraform plan
+
+      # - name: Terraform deploy
+      #   run: terraform apply --auto-approve
