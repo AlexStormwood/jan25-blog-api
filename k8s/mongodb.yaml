@@ -1,0 +1,52 @@
+# Kubernetes service configuration
+apiVersion: v1
+kind:  Service
+metadata:
+  name: mongodb
+  namespace: jan25-blog-api
+spec:
+  selector:
+    app: mongodb
+  ports:
+  - name: mongodb
+    port: 27017 # internal container port that mongodb will listen on by default 
+    targetPort: mongodb 
+
+# Use 3 dashes to separate Kubernetes resources 
+---
+# Kubernetes actual app to deploy configuration 
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: jan25-blog-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:9
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - name: mongodb
+            containerPort: 27017
+        readinessProbe:
+          tcpSocket:
+            port: mongodb 
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+
