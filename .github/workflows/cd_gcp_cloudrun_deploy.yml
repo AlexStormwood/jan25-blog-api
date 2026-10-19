@@ -1,0 +1,62 @@
+name: CD - Deploy to Cloud Run
+
+on:
+  workflow_run: 
+    workflows: ["Build and Push Docker Image (GHCR)"]
+    types:
+      - completed
+
+  # one more workflow trigger at least while we develop the workflow!
+  workflow_dispatch:
+
+jobs:
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo "No new image to build, the image builder failed."
+
+  # on-success:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  #   steps:
+  #     - run: echo "Ready to deploy a new Docker image!"
+
+  deploy-to-gcp:
+    # needs: on-success
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read # helps when reading the repo and packages 
+      id-token: write # helps to make sure we have the right access to our packages
+    steps:
+      - run: echo "Ready to deploy a new Docker image!"
+
+      # we might not need to checkout since the Docker image already exists!
+      # we don't need to build any new image!!! 
+
+      - name: GCP authentication in the command line 
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.gcp_project_id }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
+  
+      - name: Deploy the desired published container 
+        uses: google-github-actions/deploy-cloudrun@v3\
+        with:
+          project_id: ${{ vars.gcp_project_id }}
+          region: australia-southeast1
+          service: jan25-blog-api-cicd
+          image: ghcr.io/alexstormwood/jan25-blog-api:latest
+          # image: ghcr.io/alexstormwood/jan25-blog-api:sha-${{github.event.workflow_run.head_sha}}
+                #ghcr.io/alexstormwood/jan25-blog-api:sha-aksudfcakfscd
+          env_vars: |
+            NODE_ENV=production
+            DATABASE_URL=${{secrets.DATABASE_URL}}
+            JWT_SECRET_KEY=${{secrets.JWT_SECRET_KEY}}
+          flags: --port=3000 --allow-unauthenticated
+          revision_traffic: LATEST=100
+
+
+
+
