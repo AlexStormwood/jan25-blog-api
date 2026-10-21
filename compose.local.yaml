@@ -12,8 +12,29 @@ services:
     #  Can't customise container port if we are NOT building the image here in this compose file!!
       - ${PORT:-3000}:${PORT:-3000}
 
+    environment:
+      - DATABASE_URL:mongodb://mongodb_container:27017/jan25-blog-api
+
     env_file:
       - ./docker.env
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - public 
+      - private 
+    # read_only if we know for sure that this app does NOT 
+    # modify any files as part of its normal operations, e.g. file write
+    read_only: true
+
+    # prevent the dockerfile user from ever becoming an admin terminal user
+    # to help protect the running app!
+    # very relevant for apps that run on dedicated servers, e.g. desktop software 
+    # or other long-lived containers, e.g. NOT Google Cloud Run or other per-request-lived servers
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL 
 
 
 
@@ -22,3 +43,20 @@ services:
     container_name: "mongodb_container"
     volumes:
       - ./mongo-data:/data/db
+    healthcheck:
+      test: ["CMD","mongosh","--quiet","--eval","db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - private
+
+
+networks:
+  # public is just mapping to default network settings,
+  # kinda like not setting any specific network stuff at all
+  public: {}
+
+  private: 
+    internal: true 
+

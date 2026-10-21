@@ -20,7 +20,7 @@ dbConnect().then(() => {
 
 	// Run the server
 	app.listen(process.env.PORT || 3000, () => {
-		console.log("Hello world! Server is running on http://localhost:3000/");
+		console.log("Hello world! Docker image optimised Server is running on http://localhost:3000/");
 	});
 
 });
